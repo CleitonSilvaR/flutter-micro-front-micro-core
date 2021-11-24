@@ -5,16 +5,16 @@ import 'micro_core_utils.dart';
 import 'microapp.dart';
 
 abstract class BaseApp {
-  List<MicroApp>? get microApps;
+  List<MicroApp> get microApps;
 
-  Map<String, WidgetBuilderArgs>? get baseRoutes;
+  Map<String, WidgetBuilderArgs> get baseRoutes;
 
   final Map<String, WidgetBuilderArgs> routes = {};
 
-  void registerRoutes() {
-    if (baseRoutes?.isNotEmpty ?? false) routes.addAll(baseRoutes!);
-    if (microApps?.isNotEmpty ?? false) {
-      for (MicroApp microapp in microApps!) {
+  void registerRouters() {
+    if (baseRoutes.isNotEmpty) routes.addAll(baseRoutes);
+    if (microApps.isNotEmpty) {
+      for (MicroApp microapp in microApps) {
         routes.addAll(microapp.routes);
       }
     }
@@ -23,13 +23,12 @@ abstract class BaseApp {
   Route<dynamic>? generateRoute(RouteSettings settings) {
     var routerName = settings.name;
     var routerArgs = settings.arguments;
-    if (routerName == null || routerArgs == null) return null;
 
     var navigateTo = routes[routerName];
     if (navigateTo == null) return null;
 
     return MaterialPageRoute(
-      builder: (context) => navigateTo.call(context, routerArgs),
+      builder: (context) => navigateTo.call(context, routerArgs ?? {}),
     );
   }
 }
